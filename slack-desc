@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                 |-----handy-ruler------------------------------------------------------|
+wps-office: WPS Office a.k.a KingSoft Office for Linux
+wps-office:
+wps-office:
+wps-office:
+wps-office:
+wps-office: This is a binary repackage.
+wps-office:
+wps-office:
+wps-office:
+wps-office: http://wps-community.org
+wps-office:
