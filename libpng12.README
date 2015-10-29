@@ -1,0 +1,5 @@
+WPS Office for Linux masih membutuhkan berkas libpng12
+sehingga saya kopikan secara manual file yang dibutuhkan tersebut
+Slackware Current, menggunakan pustaka libpng terbaru, versi 1.6
+File libpng yang saya sertakan adalah sudah berupa berkas biner 
+yang saya kompilasi pada mesin slackware saya. 
