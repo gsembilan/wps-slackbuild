@@ -1,0 +1,91 @@
+#!/bin/sh
+
+# Slackware build script for WPS Office (kingsoft)
+# Adapted from Slackware build script for Google Voice (talkplugin)
+# modified by gsembilan@gmail.com
+
+# Copyright 2010-2014  Erik Hanson, Minneapolis, MN, USA
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+
+PRGNAM=wps-office
+VERSION=${VERSION:-9.1.0.4975~a19p1}
+BUILD=${BUILD:-2}
+TAG=${TAG:-_Rcx}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i386 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+wget -c http://kdl.cc.ksosoft.com/wps-community/download/a18/${PRGNAM}_${VERSION}_${ARCH}.deb
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/rcxbuild}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-/tmp}
+LIBPNG12=$CWD/libpng12.so.0.53.0
+
+case "$ARCH" in
+  i?86) DEBARCH="i386" ;;
+  x86_64) DEBARCH="amd64" ;;
+  *) echo "Not supported" ; exit 1 ;;
+esac
+
+#set -eu
+
+REAL_VER=$(ar p wps-office_${VERSION}_${DEBARCH}.deb control.tar.gz 2> /dev/null | tar zxO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $PKG
+ar p $CWD/${PRGNAM}_${REAL_VER}_${DEBARCH}.deb data.tar.xz | tar Jxv || exit 1
+rm -rf etc/
+
+cp $LIBPNG12 opt/kingsoft/wps-office/office6
+   cd opt/kingsoft/wps-office/office6/
+      ln -s libpng12.so.0.53.0 libpng12.so.0
+      ln -s libpng12.so.0.53.0 libpng12.so
+cd $PKG
+
+chown -R root:root .
+chmod -R u+w,go+r-w,a-s .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+ -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+chmod 0755 $PKG # Put this back.
+
+if [ "$DEBARCH" = "amd64" ] ; then mv $PKG/usr/lib $PKG/usr/lib64 ; fi
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$REAL_VER-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+
+echo "Cleaning working directory"
+cd $TMP ; rm -rf $PKG
