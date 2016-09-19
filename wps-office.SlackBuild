@@ -28,6 +28,7 @@
 PRGNAM=wps-office
 PRGLPNG=libpng
 VERSION=${VERSION:-10.1.0.5672~a21}
+VL=${VL:-`echo $VERSION | cut -d~ -f2`}
 VERLPNG=${VERLPNG:-1.2.56}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_Rcx}
@@ -40,7 +41,7 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-wget -c http://kdl.cc.ksosoft.com/wps-community/download/a21/${PRGNAM}_${VERSION}_${ARCH}.deb
+wget -c http://kdl.cc.ksosoft.com/wps-community/download/$VL/${PRGNAM}_${VERSION}_${ARCH}.deb
 wget -c https://sourceforge.net/projects/libpng/files/libpng12/$VERLPNG/$PRGLPNG-$VERLPNG.tar.xz
 
 CWD=$(pwd)
